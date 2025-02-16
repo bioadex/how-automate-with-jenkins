@@ -1,0 +1,8 @@
+echo "Hello Project"       # echo the word Hello Project
+echo "The build ID of this job is ${BUILD_ID}"    # this is will give JOB build ID 
+echo "The build URL is ${BUILD_URL}"        # this is will give JOB build URL to locate the job 
+ls -ltr                   # will lists the file 
+
+echo "sample jenkins" > example.txt    # create a file name example.txt then write into the file 
+
+ls -ltr                 # this will list the file again to confirm if the file example.txt is created. 
