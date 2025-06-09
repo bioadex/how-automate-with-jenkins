@@ -1,0 +1,15 @@
+with this code this will help you update and upgrade a remote server
+
+pipeline {
+    agent any
+    stages {
+        stage('Update and Upgrade Server') {
+            steps {
+                sshagent(['remote-ssh-keys']) {
+                        sh 'echo "*******" | ssh -o StrictHostKeyChecking=no -l abb 192.168.*.* sudo -S apt update'
+                        sh 'echo "********" | ssh -o StrictHostKeyChecking=no -l abb 192.168.*.* sudo -S apt upgrade -y'     # echo "enter remote server password" this is not best practice for security while change the abb to your remote server user
+                }
+            }
+        }
+    }
+}
