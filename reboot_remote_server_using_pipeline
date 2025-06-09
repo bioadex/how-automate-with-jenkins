@@ -1,0 +1,12 @@
+pipeline {
+    agent any
+    stages {
+        stage('Reboot Remote Server') {
+            steps {
+                sshagent(['remote-ssh-keys']) {
+                    sh 'echo "*******" | ssh -o StrictHostKeyChecking=no -l abb 192.168.*.* sudo -S reboot'         #echo your remote server pass but not the best practice.  change abb remote server username and ip 
+                }
+            }
+        }
+    }
+}
