@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+    stages {
+        stage('Reboot Multiple Remote Servers') {
+            steps {
+                script {
+                    // Map of IP addresses to their respective usernames
+                    def serverMap = [
+                        '192.168.0.*': 'abb',        #username with sudo ability to reboot the server
+                        '192.168.0.*': 'abb'         #username with sudo ability to reboot the server    
+                    ]
+                    
+                    sshagent(['remote-ssh-keys']) {
+                        serverMap.each { ip, user -> 
+                            sh """
+                                echo "Rebooting ${ip} as ${user}..."
+                                echo "******" | ssh -o StrictHostKeyChecking=no -l ${user} ${ip} sudo -S /sbin/reboot         # echo the password but this is not for best practice 
+                            """
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
