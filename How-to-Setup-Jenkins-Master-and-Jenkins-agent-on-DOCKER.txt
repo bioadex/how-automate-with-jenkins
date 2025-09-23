@@ -1,0 +1,161 @@
+Firstly you have to have Docker running on your server 
+
+Am using Docker Desktop installed on Windows Machine 
+
+Using docker compose file to installed 
+
+jenkins-master and jenkins-agent MAKE sure that both are on the same network of docker 
+
+create a new network 
+
+docker create network jenkins-network 
+
+copy the dockerfile 
+
+then run it 
+
+docker-compose -f docker-compose-jenkins.yml up -d
+
+after successful run and installed 
+
+docker ps    # this will list running container
+
+jenkins-master 
+
+jenkins-agent 
+
+To make sure they are communicating to each other try ping jenkins-agent from inside jenkins master vice versa 
+
+docker exec -it jenkins-master ping jenkins-agent
+
+OR 
+
+Enter into the jenkins master as root to ping jenkins agent 
+
+docker exec -it -u root jenkins-master bash
+
+After you enter the jenkins-master container 
+
+ping jenkins-agent 
+
+Incase ping is not installed " apt-get install iputils-ping -y"
+
+apt-get update && apt-get upgrade 
+
+then try to ping the jenkins-agent again you should get a package sent 
+
+After you see the package sent then both the jenkins-master and jenkins-agent are communicating
+
++++++++++++++++++++++ Now LOGIN into your jenkins-master +++++++++++++++++++++
+Access your jenkins-master at http://localhost:8080   # you can also use server ip address or localhost
+
+To get your initial password : docker logs jenkins-master 
+
+Then you will see the initial password 
+
+Login with the password 
+
+then create a admin user name and password 
+
+After Login Successful and Create a Username and Password also successful
+
+Next go to "Manage Jenkins"
+
+Click on Plugins then Available Plugins to install Docker and Docker Pipeline 
+
+After the Installation of the Docker and Docker Pipeline from Manage Jenkins
+
+Back to Dashboard then Manage Jenkins then Tools 
+
+Scroll Down you will see Docker Installation then ADD docker 
+
+Name :  Docker 
+Check the Box : Install Automatically 
+Docker Version : Latest or if you have Specific version Select 
+Then Click Save 
+
+++++++++++++++++++++++ How to Configure Jenkins-Master to Use Jenkins Agent ++++++++++++++++++
+Jenkins Master 
+Dashboard >>>>> Nodes >>> Add Node 
+Firstly you need to disable the Built in Node Click on Setting icon and Change 1 to 0 then Save this will disable the Built in Node
+
+To Add Docker-agent node 
+
+Click on Add 
+
+Node NAME:  docker-agent 
+Type: Click on Permanent Agent 
+Then Click on Create 
+
+Add the following : 
+
+Remote root directory 
+/home/jenkins/agent
+
+Labels
+docker-agent
+
+Usage
+Use this node as much as possible 
+
+Launch Method
+Launch agent by connecting it to the controller 
+
+Availability 
+Keep this agent online as much as possible 
+
+Click on Environment variables
+
+Name
+JENKINS_AGENT_NAME
+Value
+docker-agent 
+
+Click Add again 
+
+Name
+JENKINS_URL
+Value
+http://jenkins-master:8080
+
+Go back to the Node you will see the docker-agent Node you create then click on it to get the secert code 
+then click on Add again to add the secert code 
+
+Name
+JENKINS_SECRET
+Value
+8931240e23090fdf650586bced6de2cf1f5b0cdb7be9a7116************************
+
+Then Click Save 
+
+Then Copy the "Run from agent command line: (Unix)"
+
+curl -s0 http://jenkins-master:8080/jnlpJars/agent.jar
+java -jar agent.jar -url http://jenkins-master:8080/ -secret 8931240e23090fdf650586bced6de2cf1f5b0cdb7be9a******************** -name "docker-agent" -webSocket -workDir "/home/jenkins/agent"
+
+Look something like the above 
+
+then enter into your jenkins-agent 
+
+docker exec -it -u root jenkins-agent bash
+
+curl -s0 http://jenkins-master:8080/jnlpJars/agent.jar
+
+java -jar agent.jar -url http://jenkins-master:8080/ -secret 8931240e23090fdf650586bced6de2cf1f5b0cdb7be9a******************** -name "docker-agent" -webSocket -workDir "/home/jenkins/agent"     # make sure you change http:localhost:8080 to http://jenkins-master:8080
+
+
+Then you will see your docker-agent ONLINE or Connected 
+
+NOTED TO REMEMBER HERE!!! Whenever you restart your docker container the docker-agent will stop working you need to re-connect it again. Take Note of this 
+
+You can also WATCH this video for better Understanding : https://www.youtube.com/watch?v=YGAvqJFr_yM
+
+Then after all this you can create a Frestyle job and Pipeline job using the Docker agent instead of using any agent that is not secure. 
+
+
+
+
+
+
+
+

@@ -1,0 +1,32 @@
+version: '3'
+services:
+  jenkins-master:
+    image: jenkins/jenkins:lts    # better performance change to specific version 
+    container_name: jenkins-master
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - jenkins-network
+
+  docker-agent:
+    image: jenkins/agent
+    container_name: docker-agent
+    depends_on:
+      - jenkins-master
+    restart: always
+    networks:
+      - jenkins-net
+    command: >
+      java -jar /usr/share/jenkins/agent.jar
+      -jnlpUrl http://jenkins-master:8080/computer/docker-agent/jenkins-agent.jnlp
+      -secret <secret>
+      -workDir /home/jenkins
+
+volumes:
+  jenkins_home:
+
+networks:
+  jenkins-network:
