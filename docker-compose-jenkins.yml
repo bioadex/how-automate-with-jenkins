@@ -18,7 +18,7 @@ services:
       - jenkins-master
     restart: always
     networks:
-      - jenkins-net
+      - jenkins-network
     command: >
       java -jar /usr/share/jenkins/agent.jar
       -jnlpUrl http://jenkins-master:8080/computer/docker-agent/jenkins-agent.jnlp
@@ -30,3 +30,4 @@ volumes:
 
 networks:
   jenkins-network:
+
