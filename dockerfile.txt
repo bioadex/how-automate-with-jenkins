@@ -1,0 +1,7 @@
+docker run -v G:/keycloak:/opt/keycloak/conf
+-p 8443:8443 --net keycloak-network 
+-e KEYCLOAK_ADMIN=admin 
+-e KEYCLOAK_ADMIN_PASSWORD=changeme
+KC_DB=mysql -e KC_DB_URL=jdbc:mysql://mysql:3306/keycloak?useSSL=false -e
+KC_DB_USERNAME=keycloak -e KC_DB_PASSWORD=password -e
+KC_HOSTNAME=localhost quay.io/keycloak/keycloak:latest start --auto-build --db=mysql
