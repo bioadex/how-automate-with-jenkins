@@ -1,0 +1,15 @@
+To Create your first Jenkins Job 
+Click on New item 
+Enter Name for the new item e.g my_first_jenkins_job
+click freestyle then click on SAVE 
+
+then go to Build step 
+Excute shell 
+
+hostname 
+
+then SAVE 
+
+then click on Build Now 
+
+this will determine who is the current user!!! 
